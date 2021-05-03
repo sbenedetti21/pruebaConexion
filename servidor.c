@@ -16,11 +16,14 @@
 #include <stdint.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <pthread.h>
 
 #define PUERTO "3490"
 #define CONEXIONES_EN_COLA 5
 #define BUFFER_SIZE 1024
 #define CONEXIONES_TOTALES 3
+
+void atenderCliente(int);
 
 int main() {
 
@@ -48,33 +51,44 @@ int main() {
 
 	int socketCliente;
 	int a = 0;
-	int status = 1;
-	char buffer[BUFFER_SIZE];
+	pthread_t t1,t2, t3;
+	pthread_t hilos[] = {t1, t2, t3};
+
+	struct sockaddr_in addr;			// Esta estructura contendra los datos de la conexion del cliente. IP, puerto, etc.
+	socklen_t addrlen = sizeof(addr);
 
 	while(a < CONEXIONES_TOTALES) {
-		struct sockaddr_in addr;			// Esta estructura contendra los datos de la conexion del cliente. IP, puerto, etc.
-		socklen_t addrlen = sizeof(addr);
 
 		socketCliente = accept(socketfd, (struct sockaddr *) &addr, &addrlen);
 
 		printf("Conexion iniciada con %s:%d\n", inet_ntoa(addr.sin_addr), ntohs(addr.sin_port));
 
-		if(childpid = fork() == 0) {
-			close(socketfd);
+		pthread_create(hilos[a], NULL, (void*) atenderCliente, socketCliente);
 
-			while (status != 0){
-					status = recv(socketCliente, (void*) buffer, BUFFER_SIZE, 0);
-					if (status != 0) printf("%s:%d says: %s", inet_ntoa(addr.sin_addr), ntohs(addr.sin_port), buffer);
-			}
-		}
 		a++;
+		//close(socketCliente);
+		printf("llegue aca 0 \n");
 	}
 
-	if (childpid > 0) {
-		waitpid(childpid, NULL, 0);
+	for (int i = 0; i < CONEXIONES_TOTALES; i++) {
+		pthread_join(hilos[i], NULL);
 	}
 
 	close(socketCliente);
 
 	return 0;
 }
+
+
+ void atenderCliente(int socketCliente) {
+	 char buffer[BUFFER_SIZE];
+	 int status = 1;
+
+	 while (status != 0){
+	 	status = recv(socketCliente, (void*) buffer, BUFFER_SIZE, 0);
+	 	if (status != 0) printf("%s", buffer);
+	 }
+
+ }
+
+
