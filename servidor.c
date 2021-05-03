@@ -1,5 +1,5 @@
 /*
- * cliente.c
+ * servidor.c
  *
  *  Created on: 30 abr. 2021
  *      Author: utnso
@@ -30,8 +30,6 @@ int main() {
 	struct addrinfo hints;
 	struct addrinfo *servinfo;
 	int socketfd;
-
-	pid_t childpid;
 
 
 	memset(&hints, 0, sizeof hints);
@@ -66,8 +64,6 @@ int main() {
 		pthread_create(&(hilos[a]), NULL, (void*) atenderCliente, socketCliente);
 
 		a++;
-		//close(socketCliente);
-		printf("llegue aca 0 \n");
 	}
 
 	for (int i = 0; i < CONEXIONES_TOTALES; i++) {
