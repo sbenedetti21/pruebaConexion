@@ -63,7 +63,7 @@ int main() {
 
 		printf("Conexion iniciada con %s:%d\n", inet_ntoa(addr.sin_addr), ntohs(addr.sin_port));
 
-		pthread_create(hilos[a], NULL, (void*) atenderCliente, socketCliente);
+		pthread_create(&(hilos[a]), NULL, (void*) atenderCliente, socketCliente);
 
 		a++;
 		//close(socketCliente);
