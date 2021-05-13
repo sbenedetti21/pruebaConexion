@@ -61,6 +61,8 @@ int main() {
 
 		printf("Conexion iniciada con %s:%d\n", inet_ntoa(addr.sin_addr), ntohs(addr.sin_port));
 
+		send(socketCliente, "Te conectaste broder", 22, 0);
+
 		pthread_create(&(hilos[a]), NULL, (void*) atenderCliente, socketCliente);
 
 		a++;

@@ -39,6 +39,9 @@ int main() {
 
 	freeaddrinfo(servinfo);
 
+	recv(socketfd, &buffer, 21, 0);
+	printf("%s \n",buffer);
+
 	while(enviar){
 			fgets(buffer, BUFFER_SIZE, stdin);			// Lee una linea en el stdin (lo que escribimos en la consola) hasta encontrar un \n (y lo incluye) o llegar a PACKAGESIZE.
 			if (!strcmp(buffer,"exit\n")) enviar = 0;			// Chequeo que el usuario no quiera salir
